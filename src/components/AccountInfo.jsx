@@ -1,6 +1,6 @@
-import { Button } from "antd";
 import { useDispatch, useSelector } from "react-redux"
 import { signOut } from "../store/features/currentUserSlice";
+import {StyledButton, Container} from './AccountInfo.style'
 
 export default function AccountInfo() {
 
@@ -12,10 +12,12 @@ export default function AccountInfo() {
     dispatch(signOut());
   }
 
+
   return (
-    <div>
+    <Container>
       <strong>Hi, {user.login}</strong>
-      <Button color="danger" variant="solid" onClick={logout}>Sign out</Button>
-    </div>
+      <span>|</span>
+      <StyledButton color="danger" variant="solid" onClick={logout}>Sign out</StyledButton>
+    </Container>
   )
 }

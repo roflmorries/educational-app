@@ -7,8 +7,11 @@ const { Header, Content } = Layout;
 import "./App.scss";
 import Auth from "./components/Auth";
 import CoursesPage from "./components/courses/CoursesPage";
-import StudentsPage from "./components/StudentsPage";
+import StudentsPage from "./components/students/StudentsPage";
 import Sider from "antd/es/layout/Sider";
+import { CustomLayout, NavLayout, CustomMenu, CustomHeader } from './App.styled'
+
+
 
 function App() {
   const user = useSelector((state) => state.currentUser);
@@ -26,24 +29,23 @@ function App() {
   ];
 
   const handleMenuClick = ({ key }) => {
-    console.log(key);
     navigate(`/${key}`);
   };
 
   return (
     <>
       {/* <Flex gap="middle" wrap> */}
-        <Layout>
-          <Header className="header">
+        <NavLayout>
+          <CustomHeader className="header">
             <Auth />
-          </Header>
-        </Layout>
-        <Layout>
-          <Sider width="15%">
+            <div className="logo__nav"><span>Educational<span>App</span></span></div>
+          </CustomHeader>
+        </NavLayout>
+        <CustomLayout>
+          <Sider width="14%">
             {user.isAuth && (
-              <Menu
+              <CustomMenu
                 onClick={handleMenuClick}
-                style={{ width: 256 }}
                 defaultSelectedKeys={["1"]}
                 defaultOpenKeys={["courses"]}
                 mode="inline"
@@ -60,7 +62,7 @@ function App() {
               </Routes>
             )}
           </Content>
-        </Layout>
+        </CustomLayout>
       {/* </Flex> */}
     </>
   );

@@ -1,17 +1,20 @@
 import { Button } from "antd";
+import { Wrapper } from "./StudentCard.style";
 
 export default function StudentCard({ onEdit, onDelete, ...student }) {
 
   return (
-    <div>
-      <div>
-      Name: {student.fullname}
-      City: {student.city}
-      Telegram: {student.telegram}
-      Gender: {student.gender}
+    <Wrapper>
+      <div className="content">
+        <p>Name: {student.fullname}</p>
+        <p>City: {student.city}</p>
+        <p>Telegram: {student.telegram}</p>
+        <p>Gender: {student.gender}</p>
       </div>
-      <Button type="primary" onClick={() => onEdit(student.id)}>Edit</Button>
-      <Button color="danger" onClick={() => onDelete(student.id)}>Delete</Button>
-    </div>
+      <div className="button__container">
+        <Button type="primary" onClick={() => onEdit(student.id)}>Edit</Button>
+        <Button color="danger" onClick={() => onDelete(student.id)}>Delete</Button>
+      </div>
+    </Wrapper>
   )
 }
