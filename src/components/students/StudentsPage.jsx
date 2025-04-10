@@ -5,7 +5,8 @@ import StudentForm from "./StudentForm";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAll } from "../../store/selectors/studentsSelectors";
 import { deleteItem } from "../../store/features/studentsSlice";
-import {StyledContainer} from './StudentsPage.style'
+import {StyledContainer, StyledModalContent} from './StudentsPage.style'
+
 
 
 export default function StudentsPage() {
@@ -47,16 +48,20 @@ export default function StudentsPage() {
       </div>
       <Modal
       open={isAddFormShown}
-      onCancel={() => isAddFormShown(false)} 
+      onCancel={hideAddStudentForm} 
       footer={null}
       centered
       >
+        <StyledModalContent>
         <StudentForm onSave={hideAddStudentForm} />
+        </StyledModalContent>
       </Modal>
       <StudentsList items={data} onEdit={handleStudentEdit} onDelete={handleStudentDelete}  />
 
-      <Modal title="Edit Student" open={isEditModalShown} onCancel={hideEditModal}>
-        <StudentForm studentId={editStudentId} onSave={hideEditModal} />
+      <Modal title="Edit Student" open={isEditModalShown} onCancel={hideEditModal} footer={null} centered>
+        <StyledModalContent>
+          <StudentForm studentId={editStudentId} onSave={hideEditModal} />
+        </StyledModalContent>
       </Modal>
     </StyledContainer>
   )
