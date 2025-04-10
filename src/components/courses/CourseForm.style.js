@@ -9,8 +9,8 @@ export const CustomForm = styled(Form)`
   flex-direction: column;
 
   .ant-form-item {
-    width: 100%; /* Устанавливаем ширину для всех элементов формы */
-    max-width: 300px; /* Максимальная ширина */
+    width: 100%;
+    max-width: 300px;
   }
 
   .ant-input, 
@@ -18,18 +18,18 @@ export const CustomForm = styled(Form)`
   .ant-picker, 
   .ant-select-selector, 
   .ant-input-textarea {
-    width: 100%; /* Поля ввода занимают всю ширину родителя */
-    height: 40px; /* Устанавливаем одинаковую высоту */
-    border-radius: 5px; /* Скругленные углы */
+    width: 100%;
+    height: 40px;
+    border-radius: 5px;
   }
 
   .ant-input-textarea {
-    height: auto; /* Для TextArea высота будет автоматически подстраиваться */
+    height: auto;
   }
 
   .ant-btn {
-    width: 100%; /* Кнопка также занимает всю ширину */
-    max-width: 300px; /* Максимальная ширина */
+    width: 100%;
+    max-width: 300px;
     margin-top: 15px;
   }
 `
