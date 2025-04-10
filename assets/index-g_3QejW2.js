@@ -495,7 +495,7 @@ font-weight: bolder;
       margin-right: 5%;
     }
   }
-`;function Tq(){const e=ul(Oq),[t,n]=c.useState(!1),[r,o]=c.useState(!1),[l,u]=c.useState(""),f=xs(),m=()=>{o(!0)},v=()=>{o(!1)},g=C=>{n(!0),u(C)},h=C=>{f(wq(C))},b=()=>{n(!1)};return ze.jsxs(Mq,{children:[ze.jsx("div",{className:"title",children:ze.jsx("h3",{children:"Students Page"})}),ze.jsx("div",{className:"button__container",children:ze.jsx(xr,{type:"primary",onClick:m,children:"Add Course"})}),ze.jsx(kr,{open:r,onCancel:()=>r(!1),footer:null,centered:!0,children:ze.jsx(v$,{onSave:v})}),ze.jsx(Sq,{items:e,onEdit:g,onDelete:h}),ze.jsx(kr,{title:"Edit Student",open:t,onCancel:b,children:ze.jsx(v$,{studentId:l,onSave:b})})]})}const Iq=Xr(Lo)`
+`;function Tq(){const e=ul(Oq),[t,n]=c.useState(!1),[r,o]=c.useState(!1),[l,u]=c.useState(""),f=xs(),m=()=>{o(!0)},v=()=>{o(!1)},g=C=>{n(!0),u(C)},h=C=>{f(wq(C))},b=()=>{n(!1)};return ze.jsxs(Mq,{children:[ze.jsx("div",{className:"title",children:ze.jsx("h3",{children:"Students Page"})}),ze.jsx("div",{className:"button__container",children:ze.jsx(xr,{type:"primary",onClick:m,children:"Add Course"})}),ze.jsx(kr,{open:r,onCancel:()=>r(!1),footer:null,centered:!0,children:ze.jsx(v$,{onSave:v})}),ze.jsx(Sq,{items:e,onEdit:g,onDelete:h}),ze.jsx(kr,{title:"Edit Student",open:t,onCancel:b,footer:null,children:ze.jsx(v$,{studentId:l,onSave:b})})]})}const Iq=Xr(Lo)`
   height: 100vh;
   main {
     display: flex;
