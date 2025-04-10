@@ -44,7 +44,7 @@ export default function StudentsPage() {
         <h3>Students Page</h3>
       </div>
       <div className="button__container">
-        <Button type="primary" onClick={showAddStudentForm}>Add Course</Button>
+        <Button type="primary" onClick={showAddStudentForm}>Add Student</Button>
       </div>
       <Modal
       open={isAddFormShown}

@@ -60,7 +60,7 @@ export default function StudentForm({onSave, studentId}) {
       autoComplete="off"
       className="students-form"
     >
-      <h3>Create Course Form</h3>
+      <h3>Create Student Form</h3>
       <Form.Item
         label="Fullname"
         name="fullname"
