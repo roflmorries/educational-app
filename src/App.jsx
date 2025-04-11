@@ -7,6 +7,7 @@ const { Header, Content } = Layout;
 import "./App.scss";
 import Auth from "./components/Auth";
 import CoursesPage from "./components/courses/CoursesPage";
+import CoursePage from "./components/course/CoursePage";
 import StudentsPage from "./components/students/StudentsPage";
 import Sider from "antd/es/layout/Sider";
 import { CustomLayout, NavLayout, CustomMenu, CustomHeader } from './App.styled'
@@ -58,6 +59,7 @@ function App() {
             {user.isAuth && (
               <Routes>
                 <Route path="/courses" element={<CoursesPage />} />
+                <Route path="/course/:courseId" element={<CoursePage />} />
                 <Route path="/students" element={<StudentsPage />} />
               </Routes>
             )}
