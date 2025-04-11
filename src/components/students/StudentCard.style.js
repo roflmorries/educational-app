@@ -6,10 +6,10 @@ export const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
     .content {
-        width: 70%;
+        min-width: 60%;
         display: flex;
-        gap: 20px;
-        justify-content: space-around;
+        gap: 40px;
+        /* justify-content: space-around; */
         p {
             width: auto;
             margin: 0 !important;

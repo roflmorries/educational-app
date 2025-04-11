@@ -1,20 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Modal } from "antd";
 import StudentsList from "./StudentsList";
 import StudentForm from "./StudentForm";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAll } from "../../store/selectors/studentsSelectors";
-import { deleteItem } from "../../store/features/studentsSlice";
+import { deleteItem, getAllStudents } from "../../store/features/studentsSlice";
 import {StyledContainer, StyledModalContent} from './StudentsPage.style'
 
 
 
 export default function StudentsPage() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllStudents())
+  }, [])
+
+
   const data = useSelector(selectAll)
   const [isEditModalShown, setIsEditModalShown] = useState(false);
   const [isAddFormShown, setIsAddFormShown] = useState(false);
   const [editStudentId, setEditStudentID] = useState('');
-  const dispatch = useDispatch();
 
 
   const showAddStudentForm = () => {

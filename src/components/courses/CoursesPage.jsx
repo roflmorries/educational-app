@@ -1,23 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal } from "antd";
 
 import { selectAll } from "../../store/selectors/coursesSelectors";
 import CoursesList from "./CoursesList";
 import CourseForm from "./CourseForm";
-import { deleteItem } from "../../store/features/coursesSlice";
+import { deleteItem, getAllCourses } from "../../store/features/coursesSlice";
 import { Wrapper } from "./CoursesPage.style";
 
 
 
 export default function CoursesPage() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllCourses());
+  }, [])
+
+
   const data = useSelector(selectAll);
   
   const [isAddFormShown, setIsAddFormShown] = useState(false);
   const [isEditModalShown, setIsEditModalShown] = useState(false);
   const [editCourseId, setEditCourseId] = useState(null);
 
-  const dispatch = useDispatch();
 
   const showAddCourseForm = () => {
     setIsAddFormShown(true);
@@ -51,7 +57,7 @@ export default function CoursesPage() {
       </div>
       <Modal
       open={isAddFormShown}
-      onCancel={() => isAddFormShown(false)} 
+      onCancel={hideAddCourseForm} 
       footer={null}
       centered
       >

@@ -1,16 +1,25 @@
 import { Button } from "antd";
-import { CardWrapper } from "./CourseCard.style";
+import { CardWrapper, EditButton, ViewButton } from "./CourseCard.style";
+import { useNavigate } from "react-router";
 
 
 export default function CourseCard({ onEdit, onDelete, ...course }) {
+  const navigate = useNavigate();
+
+  const handleClickCourse = () => {
+    navigate(`/course/${course.id}`)
+  }
 
   return (
     <CardWrapper>
-      <p>Name: {course.name}</p>
-      <p>Description: {course.description}</p>
+      <div className="info__container">
+        <p>Name: {course.name}</p>
+        <p>Description: {course.description}</p>
+      </div>
       <div className="buttons">
-      <Button type="primary" onClick={() => onEdit(course.id)}>Edit</Button>
-      <Button color="danger" onClick={() => onDelete(course.id)}>Delete</Button>
+        <ViewButton type="primary" onClick={handleClickCourse}>More</ViewButton>
+        <EditButton type="primary" onClick={() => onEdit(course.id)}>Edit</EditButton>
+        <Button color="danger" onClick={() => onDelete(course.id)}>Delete</Button>
       </div>
     </CardWrapper>
   )
