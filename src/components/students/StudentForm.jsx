@@ -1,11 +1,22 @@
 import { Button, Form, Input, DatePicker, Select} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useDispatch, useSelector } from "react-redux";
-import { addItem, editItem } from "../../store/features/studentsSlice";
+import { addItem, editItem, saveStudentAsync } from "../../store/features/studentsSlice";
 import { selectById } from "../../store/selectors/studentsSelectors";
 import { useEffect, useState } from "react";
 import {v4 as uuidv4} from 'uuid';
 import dayjs from "dayjs";
+import { schema } from "../../validation/studentSchema";
+
+const createYupSync = (fieldName) => ({
+  async validator(_, value) {
+    try {
+      await schema.validateSyncAt(fieldName, { [fieldName]: value });
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  },
+});
 
 
 export default function StudentForm({onSave, studentId}) {
@@ -31,8 +42,10 @@ export default function StudentForm({onSave, studentId}) {
   }, [studentId, currentStudent, form]);
 
   const handleStudentSaveNew = values => {
-    const id = uuidv4();
-    dispatch(addItem({...values, dateOfBirth: date, id}));
+    // const id = uuidv4();
+    const newStudent = {...values, dateOfBirth: date}
+    // dispatch(addItem(newStudent));
+    dispatch(saveStudentAsync(newStudent))
     onSave();
   }
 
@@ -65,7 +78,7 @@ export default function StudentForm({onSave, studentId}) {
         label="Fullname"
         name="fullname"
         initialValue={studentId && currentStudent.fullname}
-        rules={[{ required: true, message: "Please enter your fullname!" }]}
+        rules={[createYupSync('fullname')]}
       >
         <Input />
       </Form.Item>
@@ -73,7 +86,7 @@ export default function StudentForm({onSave, studentId}) {
         label="City"
         name="city"
         initialValue={studentId && currentStudent.city}
-        rules={[{ required: true, message: "Please enter your city" }]}
+        rules={[createYupSync('city')]}
       >
         <Input/>
       </Form.Item>
@@ -82,7 +95,7 @@ export default function StudentForm({onSave, studentId}) {
       label="Birth Day"
       name="dateOfBirth"
       initialValue={studentId && dayjs(currentStudent.dateOfBirth)}
-      rules={[{ required: true }]}
+      rules={[createYupSync('dateOfBirth')]}
       >
         <DatePicker onChange={onChangeDate} value={date ? dayjs(date, "YYYY-MM-DD") : null}/>
       </Form.Item>
@@ -90,7 +103,7 @@ export default function StudentForm({onSave, studentId}) {
       <Form.Item
         label="Gender"
         name="gender"
-        rules={[{ required: true, message: "Please select a gender!" }]}
+        rules={[createYupSync('gender')]}
         initialValue="male"
         >
         <Select
@@ -106,7 +119,7 @@ export default function StudentForm({onSave, studentId}) {
         label="Telegram"
         name="telegram"
         initialValue={studentId && currentStudent.telegram}
-        rules={[{ required: true, message: "Please enter your Telegram" }]}
+        rules={[createYupSync('telegram')]}
       >
         <Input/>
       </Form.Item>

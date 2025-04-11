@@ -1,12 +1,23 @@
 import { Button, Form, Input, DatePicker, InputNumber} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useDispatch, useSelector } from "react-redux";
-import { addItem, editItem } from "../../store/features/coursesSlice";
+import { addItem, editItem, saveCourseAsync } from "../../store/features/coursesSlice";
 import { selectById } from "../../store/selectors/coursesSelectors";
 import { useEffect, useState } from "react";
 import {v4 as uuidv4} from 'uuid';
 import dayjs from "dayjs";
 import { CustomForm } from "./CourseForm.style";
+import { schema } from "../../validation/courseSchema";
+
+const createYupSync = (fieldName) => ({
+  async validator(_, value) {
+    try {
+      await schema.validateSyncAt(fieldName, { [fieldName]: value });
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  },
+});
 
 
 
@@ -32,8 +43,10 @@ export default function CourseForm({onSave, courseId}) {
   }, [courseId, currentCourse, form]);
 
   const handleCourseSaveNew = values => {
-    const id = uuidv4();
-    dispatch(addItem({...values, startDate: date, numberOfClasses: values.numberOfClasses, id}));
+    // const id = uuidv4();
+    const newCourse = {...values, startDate: date, numberOfClasses: values.numberOfClasses}
+    // dispatch(addItem(newCourse));
+    dispatch(saveCourseAsync(newCourse))
     onSave();
   }
 
@@ -67,7 +80,7 @@ export default function CourseForm({onSave, courseId}) {
         label="Name"
         name="name"
         initialValue={courseId && currentCourse.name}
-        rules={[{ required: true, message: "Please input the course name!" }]}
+        rules={[createYupSync('name')]}
       >
         <Input />
       </Form.Item>
@@ -75,7 +88,7 @@ export default function CourseForm({onSave, courseId}) {
         label="Description"
         name="description"
         initialValue={courseId && currentCourse.description}
-        rules={[{ required: false }]}
+        rules={[createYupSync('description')]}
       >
         <TextArea />
       </Form.Item>
@@ -84,7 +97,7 @@ export default function CourseForm({onSave, courseId}) {
       label="Start Date"
       name="startDate"
       initialValue={courseId && dayjs(currentCourse.startDate)}
-      rules={[{ required: true }]}
+      rules={[createYupSync('startDate')]}
       >
         <DatePicker onChange={onChangeDate} value={date ? dayjs(date, "YYYY-MM-DD") : null}/>
       </Form.Item>
@@ -93,7 +106,7 @@ export default function CourseForm({onSave, courseId}) {
       label="Number of classes"
       name="numberOfClasses"
       initialValue={courseId && currentCourse.numberOfClasses || 10}
-      rules={[{ required: false }]}
+      rules={[createYupSync('numberOfClasses')]}
       >
         <InputNumber min={1} max={120} />
       </Form.Item>

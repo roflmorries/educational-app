@@ -3,6 +3,17 @@ import { signIn } from "../store/features/currentUserSlice";
 import { Button, Form, Input, Modal } from "antd";
 import { useState } from "react";
 import {CustomForm, StyledButton} from './LoginForm.style'
+import { schema } from "../validation/loginSchema";
+
+const createYupSync = (fieldName) => ({
+  async validator(_, value) {
+    try {
+      await schema.validateSyncAt(fieldName, { [fieldName]: value });
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  },
+});
 
 export default function LoginForm() {
   const dispatch = useDispatch();
@@ -34,7 +45,7 @@ export default function LoginForm() {
         <Form.Item
           label="Username"
           name="username"
-          rules={[{ required: true, message: "Please input your username!" }]}
+          rules={[createYupSync('username')]}
         >
           <Input />
         </Form.Item>
@@ -42,7 +53,7 @@ export default function LoginForm() {
         <Form.Item
           label="Password"
           name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
+          rules={[createYupSync('password')]}
         >
           <Input.Password />
         </Form.Item>
