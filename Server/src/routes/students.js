@@ -1,49 +1,83 @@
 import { Router } from "express";
-
-import { v4 as uuidv4 } from "uuid";
+import { getDB } from "../config/db.js";
+import { ObjectId } from "mongodb";
 
 const router = Router();
 
-let students = [];
+// let students = [];
+const COLLECTION = 'students';
 
-// CRUD for students
-router.get("/", (req, res) => res.json(students));
-
-router.get("/:id", (req, res) => {
-  const student = students.find(s => s.id === req.params.id);
-  if (!student) return res.status(404).json({ error: "Student not found" });
-  res.json(student);
+router.get("/", async (req, res) => {
+  try {
+    const db = getDB();
+    const students = await db.collection(COLLECTION).find({}).toArray();
+    res.json(students);
+  } catch (error) {
+    console.error(error);
+  }
 });
 
-router.post("/", (req, res) => {
-  const { fullname, city, dateOfBirth, gender, telegram } = req.body;
-  const newStudent = {
-    id: uuidv4(),
+router.get("/:id", async (req, res) => {
+  try {
+    const db = getDB();
+    const student = await db.collection(COLLECTION).findOne({_id: new ObjectId(req.params.id)});
+    if (!student) return res.status(404).json({ error: 'Student not found' });
+    res.json(student);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+router.post("/", async (req, res) => {
+  try {
+    const db = getDB()
+
+    const { fullname, city, dateOfBirth, gender, telegram } = req.body;
+    const newStudent = {
     fullname,
     city,
     dateOfBirth,
     gender,
     telegram
   };
-  students.push(newStudent);
+
+  const result = await db.collection(COLLECTION).insertOne(newStudent);
+  newStudent._id = result.insertedId;
   res.status(201).json(newStudent);
+  } catch (error) {
+    console.error(error);
+  }
 });
 
-router.put("/:id", (req, res) => {
-  const student = students.find(s => s.id === req.params.id);
-  if (!student) return res.status(404).json({ error: "Student not found" });
-
-  student.fullname = req.body.fullname || student.fullname;
-  student.city = req.body.city || student.city;
-  student.dateOfBirth = req.body.dateOfBirth || student.dateOfBirth;
-  student.gender = req.body.gender || student.gender,
-  student.telegram = req.body.telegram || student.telegram
-  res.json(student);
+router.put("/:id", async (req, res) => {
+  try {
+    const db = getDB();
+    const { fullname, city, dateOfBirth, gender, telegram } = req.body;
+    const result = await db.collection(COLLECTION).findOneAndUpdate(
+      { _id: new ObjectId(req.params.id)},
+      { $set: { fullname, city, dateOfBirth, gender, telegram }},
+      { returnDocument: 'after' }
+    );
+    const updatedStudent = result.value || result.document || result;
+  
+    if (!updatedStudent || !updatedStudent._id) {
+      return res.status(404).json({ error: 'Course not found' });
+    }
+    res.status(200).json(updatedStudent);
+  } catch (error) {
+    console.error(error)
+  }
 });
 
-router.delete("/:id", (req, res) => {
-  students = students.filter(s => s.id !== req.params.id);
-  res.status(204).send();
+router.delete("/:id", async (req, res) => {
+  try {
+    const db = getDB();
+    const result = await db.collection(COLLECTION).deleteOne({ _id: new ObjectId(req.params.id) });
+    if (result.deletedCount === 0) return res.status(404).json({error: 'Student not found' });
+    res.status(204).send()
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 export default router;
