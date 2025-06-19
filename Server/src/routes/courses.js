@@ -13,7 +13,8 @@ router.get("/", async (req, res) => {
     const courses = await db.collection(COLLECTION).find({}).toArray();
     res.json(courses);
   } catch (error) {
-    console.error(error)
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -25,6 +26,7 @@ router.get("/:id", async (req, res) => {
     res.json(course);
   } catch (error) {
     console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -47,6 +49,7 @@ router.post("/", async (req, res) => {
     res.status(201).json(newCourse);
   } catch (error) {
     console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -70,6 +73,7 @@ router.put('/assign-student/:courseId', async (req, res) => {
     res.status(200).json(assignStudent);
   } catch (error) {
     console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -92,6 +96,7 @@ router.put("/:id", async (req, res) => {
     res.status(200).json(updatedCourse);
   } catch (error) {
     console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -103,6 +108,7 @@ router.delete("/:id", async (req, res) => {
     res.status(204).send();
   } catch (error) {
     console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
