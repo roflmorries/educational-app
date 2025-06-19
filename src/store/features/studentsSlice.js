@@ -1,6 +1,9 @@
 import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
-export const studentsAdapter = createEntityAdapter();
+export const studentsAdapter = createEntityAdapter({
+  selectId: student => student._id
+});
 
 const initialState = studentsAdapter.getInitialState();
 
@@ -24,6 +27,16 @@ export const getAllStudents = createAsyncThunk('students/getStudents', async () 
   return result;
 });
 
+export const deleteStudentAsync = createAsyncThunk('students/deleteStudent', async id => {
+  await axios.delete(`http://localhost:3000/students/${id}`);
+  return id;
+})
+
+export const updateStudentAsync = createAsyncThunk('students/updateStudent', async ({_id, ...data}) => {
+  const response = await axios.put(`${serverUrl}/students/${_id}`, data);
+  return response.data;
+})
+
 const studentsSlice = createSlice({
   name: 'students',
   initialState,
@@ -40,6 +53,12 @@ const studentsSlice = createSlice({
     builder.addCase(getAllStudents.fulfilled, (state, action) => {
       studentsAdapter.addMany(state, action.payload)
     });
+    builder.addCase(deleteStudentAsync.fulfilled, (state, action) => {
+      studentsAdapter.removeOne(state, action.payload);
+    })
+    builder.addCase(updateStudentAsync.fulfilled, (state, action) => {
+      studentsAdapter.upsertOne(state, action.payload);
+    })
   }
 });
 

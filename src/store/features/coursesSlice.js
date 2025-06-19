@@ -1,6 +1,9 @@
 import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
-export const coursesAdapter = createEntityAdapter();
+export const coursesAdapter = createEntityAdapter({
+  selectId: course => course._id
+});
 
 const initialState = coursesAdapter.getInitialState();
 
@@ -24,6 +27,16 @@ export const getAllCourses = createAsyncThunk('courses/getCourses', async () => 
   return result;
 });
 
+export const deleteCourseAsync = createAsyncThunk('courses/deleteCourse', async id => {
+  await axios.delete(`http://localhost:3000/courses/${id}`);
+  return id;
+})
+
+export const updateCourseAsync = createAsyncThunk('courses/updateCourse', async ({_id, ...data}) => {
+  const response = await axios.put(`${serverUrl}/courses/${_id}`, data);
+  return response.data;
+})
+
 const coursesSlice = createSlice({
   name: 'courses',
   initialState,
@@ -39,7 +52,17 @@ const coursesSlice = createSlice({
     builder.addCase(saveCourseAsync.fulfilled, (state, action) => {
           console.log(action.payload);
           coursesAdapter.addOne(state, action.payload);
-        });
+    });
+    builder.addCase(deleteCourseAsync.fulfilled, (state, action) => {
+      coursesAdapter.removeOne(state, action.payload);
+    })
+    builder.addCase(updateCourseAsync.fulfilled, (state, action) => {
+      console.log(action.payload)
+      coursesAdapter.upsertOne(state, action.payload);
+    })
+    builder.addCase(updateCourseAsync.rejected, (state, action) => {
+    console.error('Failed to update course:', action.error);
+    });
   }
 });
 
