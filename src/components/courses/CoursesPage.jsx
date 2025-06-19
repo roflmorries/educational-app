@@ -5,7 +5,7 @@ import { Button, Modal } from "antd";
 import { selectAll } from "../../store/selectors/coursesSelectors";
 import CoursesList from "./CoursesList";
 import CourseForm from "./CourseForm";
-import { deleteItem, getAllCourses } from "../../store/features/coursesSlice";
+import { deleteCourseAsync, deleteItem, getAllCourses } from "../../store/features/coursesSlice";
 import { Wrapper } from "./CoursesPage.style";
 
 
@@ -40,7 +40,7 @@ export default function CoursesPage() {
 
   const handleCourseDelete = courseId => {
     // todo: double-check if user wants to delete
-    dispatch(deleteItem(courseId));
+    dispatch(deleteCourseAsync(courseId));
   }
 
   const hideEditModal = () => {

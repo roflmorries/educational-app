@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { signIn } from "../store/features/currentUserSlice";
 import { Button, Form, Input, Modal } from "antd";
 import { useState } from "react";
-import {CustomForm, StyledButton} from './LoginForm.style'
+import { CustomForm, StyledButton } from './LoginForm.style'
 import { schema } from "../validation/loginSchema";
 
 const createYupSync = (fieldName) => ({

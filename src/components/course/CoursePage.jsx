@@ -51,7 +51,7 @@ export default function CoursePage() {
         placeholder="Select a student"
         onChange={(value) => setSelectedStudent(value)}
         options={Object.values(students || {}).map((student) => ({
-          value: student.id,
+          value: student._id,
           label: student.fullname,
         }))}
       />

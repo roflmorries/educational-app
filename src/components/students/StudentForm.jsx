@@ -1,7 +1,7 @@
 import { Button, Form, Input, DatePicker, Select} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useDispatch, useSelector } from "react-redux";
-import { addItem, editItem, saveStudentAsync } from "../../store/features/studentsSlice";
+import { addItem, editItem, saveStudentAsync, updateStudentAsync } from "../../store/features/studentsSlice";
 import { selectById } from "../../store/selectors/studentsSelectors";
 import { useEffect, useState } from "react";
 import {v4 as uuidv4} from 'uuid';
@@ -50,7 +50,7 @@ export default function StudentForm({onSave, studentId}) {
   }
 
   const handleStudentSaveEdit = values => {
-    dispatch(editItem({...values, dateOfBirth: date, id: studentId}));
+    dispatch(updateStudentAsync({...values, dateOfBirth: date, _id: studentId}));
     onSave();
   }
 

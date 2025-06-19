@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 export const CardWrapper = styled.div`
   display: flex;
-  gap: 15px;
+  gap: 65px;
   justify-content: center;
   align-items: center;
   .buttons {
@@ -16,6 +16,7 @@ export const CardWrapper = styled.div`
     display: flex;
     min-width: 45%;
     gap: 25px;
+    justify-content: space-between;
   }
 `
 

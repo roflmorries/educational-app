@@ -7,7 +7,7 @@ export default function CourseCard({ onEdit, onDelete, ...course }) {
   const navigate = useNavigate();
 
   const handleClickCourse = () => {
-    navigate(`/course/${course.id}`)
+    navigate(`/course/${course._id}`)
   }
 
   return (
@@ -18,8 +18,8 @@ export default function CourseCard({ onEdit, onDelete, ...course }) {
       </div>
       <div className="buttons">
         <ViewButton type="primary" onClick={handleClickCourse}>More</ViewButton>
-        <EditButton type="primary" onClick={() => onEdit(course.id)}>Edit</EditButton>
-        <Button color="danger" onClick={() => onDelete(course.id)}>Delete</Button>
+        <EditButton type="primary" onClick={() => onEdit(course._id)}>Edit</EditButton>
+        <Button color="danger" onClick={() => onDelete(course._id)}>Delete</Button>
       </div>
     </CardWrapper>
   )

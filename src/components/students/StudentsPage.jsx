@@ -4,7 +4,7 @@ import StudentsList from "./StudentsList";
 import StudentForm from "./StudentForm";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAll } from "../../store/selectors/studentsSelectors";
-import { deleteItem, getAllStudents } from "../../store/features/studentsSlice";
+import { deleteItem, deleteStudentAsync, getAllStudents } from "../../store/features/studentsSlice";
 import {StyledContainer, StyledModalContent} from './StudentsPage.style'
 
 
@@ -37,7 +37,7 @@ export default function StudentsPage() {
   }
 
   const handleStudentDelete = (studentId) => {
-    dispatch(deleteItem(studentId));
+    dispatch(deleteStudentAsync(studentId));
   }
 
   const hideEditModal = () => {

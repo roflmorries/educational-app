@@ -1,7 +1,7 @@
 import { Button, Form, Input, DatePicker, InputNumber} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useDispatch, useSelector } from "react-redux";
-import { addItem, editItem, saveCourseAsync } from "../../store/features/coursesSlice";
+import { addItem, editItem, saveCourseAsync, updateCourseAsync } from "../../store/features/coursesSlice";
 import { selectById } from "../../store/selectors/coursesSelectors";
 import { useEffect, useState } from "react";
 import {v4 as uuidv4} from 'uuid';
@@ -51,7 +51,7 @@ export default function CourseForm({onSave, courseId}) {
   }
 
   const handleCourseSaveEdit = values => {
-    dispatch(editItem({...values, startDate: date, numberOfClasses: values.numberOfClasses, id: courseId}));
+    dispatch(updateCourseAsync({...values, startDate: date, numberOfClasses: values.numberOfClasses, _id: courseId}));
     onSave();
   }
 

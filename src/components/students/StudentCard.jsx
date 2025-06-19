@@ -12,8 +12,8 @@ export default function StudentCard({ onEdit, onDelete, ...student }) {
         <p>Gender: {student.gender}</p>
       </div>
       <div className="button__container">
-        <Button type="primary" onClick={() => onEdit(student.id)}>Edit</Button>
-        <Button color="danger" onClick={() => onDelete(student.id)}>Delete</Button>
+        <Button type="primary" onClick={() => onEdit(student._id)}>Edit</Button>
+        <Button color="danger" onClick={() => onDelete(student._id)}>Delete</Button>
       </div>
     </Wrapper>
   )
