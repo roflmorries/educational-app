@@ -112,4 +112,16 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+router.delete('/', async (req, res) => {
+  try {
+    const db = getDB();
+    const deletedCounter = req.body;
+    const result = db.collection(COLLECTION).deleteMany(deletedCounter);
+    res.json({ deletedCount: result.deletedCount  })
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
 export default router;
