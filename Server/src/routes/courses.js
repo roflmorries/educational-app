@@ -175,8 +175,8 @@ router.delete('/many', async (req, res) => {
     const db = getDB();
     const deleteCounter = req.body;
     if (!deleteCounter) return res.status(400).json({ error: 'Missed deleteCounter' })
-    const result = db.collection(COLLECTION).deleteMany(deleteCounter);
-    res.json({ deleteCount: result.deleteCounter  })
+    const result = await db.collection(COLLECTION).deleteMany(deleteCounter);
+    res.json({ deletedCount: result.deletedCount })
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' })
