@@ -10,7 +10,12 @@ const COLLECTION = 'courses'
 router.get("/", async (req, res) => {
   try {
     const db = getDB();
-    const courses = await db.collection(COLLECTION).find({}).toArray();
+    const { skip = 0, limit = 20, sort = "name", order = "asc", fields } = req.query;
+
+    const projection = fields ? fields.split(",").reduce((acc, f) => ({ ...acc, [f]: 1 }), {}) : {};
+    const sortObj = { [sort]: order === "desc" ? -1 : 1 };
+
+    const courses = await db.collection(COLLECTION).find({}, { projection }).sort(sortObj).skip(Number(skip)).limit(Number(limit)).toArray();
     res.json(courses);
   } catch (error) {
     console.error(error);
