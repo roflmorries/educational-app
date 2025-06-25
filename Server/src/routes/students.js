@@ -52,6 +52,37 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.post("/many", async (req, res) => {
+  try {
+    const db = getDB();
+    const students = req.body;
+    const result = await db.collection(COLLECTION).insertMany(students);
+    const inserted = students.map((student, i) => ({
+      ...student,
+      _id: result.insertedIds[i]
+    }));
+    res.status(201).json(inserted);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.put("/many", async (req, res) => {
+  try {
+    const db = getDB();
+    const { filter, update } = req.body;
+    if (!filter || !update) {
+      return res.status(400).json({ error: "missed filter and update" });
+    }
+    const result = await db.collection(COLLECTION).updateMany(filter, { $set: update });
+    res.json({ matchedCount: result.matchedCount, modifiedCount: result.modifiedCount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.put("/:id", async (req, res) => {
   try {
     const db = getDB();
@@ -70,6 +101,32 @@ router.put("/:id", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.put("/replace/:id", async (req, res) => {
+  try {
+    const db = getDB();
+    const replacement = req.body;
+    const result = await db.collection(COLLECTION).replaceOne({ _id: new ObjectId(req.params.id) }, replacement);
+    if (result.matchedCount === 0) return res.status(404).json({ error: 'Student doesnt exists' });
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.delete("/many", async (req, res) => {
+  try {
+    const db = getDB();
+    const filter = req.body;
+    if (!filter) return res.status(400).json({ error: 'Missed filter' });
+    const result = await db.collection(COLLECTION).deleteMany(filter);
+    res.json({ deletedCount: result.deletedCount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
