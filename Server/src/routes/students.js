@@ -7,10 +7,31 @@ const router = Router();
 // let students = [];
 const COLLECTION = 'students';
 
+router.get("/create-indexes", async (req, res) => {
+  try {
+    const db = getDB();
+    await db.collection(COLLECTION).createIndex({ fullname: 1 });
+    await db.collection(COLLECTION).createIndex({ city: -1 });
+    await db.collection(COLLECTION).createIndex({ fullname: 1, city: 1 });
+    await db.collection(COLLECTION).createIndex({ "meta.info": 1 });
+    await db.collection(COLLECTION).createIndex({ telegram: 1 }, { unique: true, sparse: true });
+    await db.collection(COLLECTION).createIndex({ fullname: "text", city: "text" });
+    res.json({ message: "indexes created" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to create indexes" });
+  }
+});
+
 router.get("/", async (req, res) => {
   try {
     const db = getDB();
-    const students = await db.collection(COLLECTION).find({}).toArray();
+    const { skip = 0, limit = 20, sort = "fullname", order = "asc", fields } = req.query;
+
+    const projection = fields ? fields.split(",").reduce((acc, f) => ({ ...acc, [f.trim()]: 1 }), {}) : {};
+    const sortObj = { [sort]: order === "desc" ? -1 : 1 };
+
+    const students = await db.collection(COLLECTION).find({}, { projection }).sort(sortObj).skip(Number(skip)).limit(Number(limit)).toArray();
     res.json(students);
   } catch (error) {
     console.error(error);
