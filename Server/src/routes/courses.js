@@ -34,7 +34,13 @@ router.get("/", async (req, res) => {
     const sortObj = { [sort]: order === "desc" ? -1 : 1 };
 
     const courses = await db.collection(COLLECTION).find({}, { projection }).sort(sortObj).skip(Number(skip)).limit(Number(limit)).toArray();
-    res.json(courses);
+    res.json({
+      data: courses,
+      pagination: {
+        skip: Number(skip),
+        limit: Number(limit)
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
