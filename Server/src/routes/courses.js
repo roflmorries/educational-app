@@ -7,24 +7,6 @@ const router = Router();
 // let courses = [];
 const COLLECTION = 'courses';
 
-router.get("/create-indexes", async (req, res) => {
-  try {
-    const db = getDB();
-
-    await db.collection(COLLECTION).createIndex({ name: 1 });
-    await db.collection(COLLECTION).createIndex({ numberOfClasses: -1 });
-    await db.collection(COLLECTION).createIndex({ name: 1, startDate: -1 });
-    await db.collection(COLLECTION).createIndex({ "meta.info": 1 });
-    await db.collection(COLLECTION).createIndex({ description: "text" });
-    await db.collection(COLLECTION).createIndex({ description: 1 }, { sparse: true });
-
-    res.json({ message: "indexes created" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to create indexes" });
-  }
-});
-
 router.get("/", async (req, res) => {
   try {
     const db = getDB();
