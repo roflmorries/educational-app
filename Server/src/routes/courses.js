@@ -53,6 +53,47 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get('/stats', async (req, res) => {
+  try {
+    const db = getDB();
+    const statistic = await db.collection(COLLECTION).aggregate([
+      {
+        $addFields: {
+          studentCount: { $size: { $ifNull: ["$students", []] } }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalCourses: { $sum: 1 },
+          avgStudents: { $avg: "$studentCount" },
+          maxStudents: { $max: "$studentCount" },
+          totalStudents: { $sum: "$studentCount" }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          totalCourses: 1,
+          avgStudentsPerCourse: { $round: ["$avgStudents", 2] },
+          maxStudentsInCourse: "$maxStudents",
+          totalStudents: 1
+        }
+      }
+    ]).toArray();
+    
+    res.json(statistic[0] || { 
+      totalCourses: 0,
+      avgStudentsPerCourse: 0,
+      maxStudentsInCourse: 0,
+      totalStudents: 0
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   try {
     const db = getDB();
@@ -201,47 +242,6 @@ router.delete("/:id", async (req, res) => {
     const result = await db.collection(COLLECTION).deleteOne({_id: new ObjectId(req.params.id)});
     if (result.deletedCount === 0) return res.status(404).json({ error: "Course not found" });
     res.status(204).send();
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-router.get('/stats', async (req, res) => {
-  try {
-    const db = getDB();
-    const statistic = await db.collection(COLLECTION).aggregate([
-      {
-        $addFields: {
-          studentCount: { $size: { $ifNull: ["$students", []] } }
-        }
-      },
-      {
-        $group: {
-          _id: null,
-          totalCourses: { $sum: 1 },
-          avgStudents: { $avg: "$studentCount" },
-          maxStudents: { $max: "$studentCount" },
-          totalStudents: { $sum: "$studentCount" }
-        }
-      },
-      {
-        $project: {
-          _id: 0,
-          totalCourses: 1,
-          avgStudentsPerCourse: { $round: ["$avgStudents", 2] },
-          maxStudentsInCourse: "$maxStudents",
-          totalStudents: 1
-        }
-      }
-    ]).toArray();
-    
-    res.json(statistic[0] || { 
-      totalCourses: 0,
-      avgStudentsPerCourse: 0,
-      maxStudentsInCourse: 0,
-      totalStudents: 0
-    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });

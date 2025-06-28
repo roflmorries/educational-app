@@ -54,6 +54,48 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/stats", async (req, res) => {
+  try {
+    const db = getDB();
+    const summary = await db.collection(COLLECTION).aggregate([
+      {
+        $addFields: {
+          birthDate: { 
+            $cond: {
+              if: { $eq: [{ $type: "$dateOfBirth" }, "string"] },
+              then: { $dateFromString: { dateString: "$dateOfBirth", onError: new Date("2000-01-01") } },
+              else: { $ifNull: ["$dateOfBirth", new Date("2000-01-01")] }
+            }
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalStudents: { $sum: 1 },
+          oldestBirth: { $min: "$birthDate" },
+          youngestBirth: { $max: "$birthDate" },
+          averageYear: { $avg: { $year: "$birthDate" } }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          totalStudents: 1,
+          oldestBirth: { $dateToString: { format: "%Y-%m-%d", date: "$oldestBirth" } },
+          youngestBirth: { $dateToString: { format: "%Y-%m-%d", date: "$youngestBirth" } },
+          averageYear: { $round: ["$averageYear", 0] }
+        }
+      }
+    ]).toArray();
+    
+    res.json({ summary: summary[0] || { totalStudents: 0 } });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   try {
     const db = getDB();
