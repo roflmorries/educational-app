@@ -10,10 +10,32 @@ const COLLECTION = 'courses';
 router.get("/", async (req, res) => {
   try {
     const db = getDB();
-    const { skip = 0, limit = 20, sort = "name", order = "asc", fields } = req.query;
+    const { skip = 0, limit = 20, sort = "name", order = "asc", fields, useStream } = req.query;
 
     const projection = fields ? fields.split(",").reduce((acc, f) => ({ ...acc, [f]: 1 }), {}) : {};
     const sortObj = { [sort]: order === "desc" ? -1 : 1 };
+
+    if (useStream === 'true') {
+      res.setHeader('Content-Type', 'application/json');
+      res.write('{"data":[');
+
+      const cursor = await db.collection(COLLECTION).find({}, { projection }).sort(sortObj).skip(Number(skip)).limit(Number(limit));
+
+      let isFirst = true;
+
+      await cursor.forEach(course => {
+        if (!isFirst) {
+          res.write(',')
+        } else {
+          isFirst = false;
+        }
+        res.write(JSON.stringify(course));
+      });
+
+      res.write('],');
+      res.write('"pagination":{"skip":' + skip + ',"limit":' + limit + '}}');
+      return res.end();
+    }
 
     const courses = await db.collection(COLLECTION).find({}, { projection }).sort(sortObj).skip(Number(skip)).limit(Number(limit)).toArray();
     res.json({
