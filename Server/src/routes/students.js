@@ -24,14 +24,16 @@ router.get("/", async (req, res) => {
 
       let isFirst = true;
 
-      await cursor.forEach(student => {
+      while (await cursor.hasNext()) {
+        const student = await cursor.next();
+
         if (!isFirst) {
           res.write(',')
         } else {
           isFirst = false;
         }
         res.write(JSON.stringify(student));
-      });
+      }
 
       res.write('],');
       res.write('"pagination":{"skip":' + skip + ',"limit":' + limit + '}}');
