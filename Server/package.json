@@ -11,6 +11,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/cli": "^7.27.2",
+    "@babel/core": "^7.27.7",
+    "@babel/preset-env": "^7.27.2",
+    "babel-jest": "^30.0.2",
     "dotenv": "^16.5.0",
     "mongodb": "^6.17.0",
     "nodemon": "^3.1.9"
