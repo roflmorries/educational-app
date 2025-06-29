@@ -40,7 +40,7 @@ router.get("/", async (req, res) => {
     }
 
     const courses = await db.collection(COLLECTION).find({}, { projection }).sort(sortObj).skip(Number(skip)).limit(Number(limit)).toArray();
-    res.json({
+    res.status(200).json({
       data: courses,
       pagination: {
         skip: Number(skip),
@@ -111,6 +111,11 @@ router.post("/", async (req, res) => {
     const db = getDB();
 
     const { name, description, startDate, numberOfClasses } = req.body;
+
+    if (!name || !description || !startDate || !numberOfClasses) {
+      return res.status(400).json({ error: 'Missed required data' });
+    };
+
     const newCourse = {
       name,
       description,
