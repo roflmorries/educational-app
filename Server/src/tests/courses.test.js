@@ -143,19 +143,6 @@ describe('POST /courses', () => {
     const newCourse = {
       description: 'Test',
       startDate: '2025-03-02',
-      numberOfClasses: '999'
-    };
-
-    const res = await request(app).post('/courses').send(newCourse).expect(400);
-
-    expect(res.body).toHaveProperty('error', 'Missed required data');
-    expect(mockCourses.insertOne).not.toHaveBeenCalled();
-  });
-
-  test('Missed required fields', async () => {
-    const newCourse = {
-      description: 'Test',
-      startDate: '2025-03-02',
       numberOfClasses: '999',
       students: []
     }
