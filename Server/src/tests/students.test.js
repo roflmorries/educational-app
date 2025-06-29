@@ -92,7 +92,7 @@ describe('GET /students/stats', () => {
 
     const res = await request(app).get('/students/stats').expect(200);
 
-    expect(mockStudents.aggregate).toHaveBeenCalled;
+    expect(mockStudents.aggregate).toHaveBeenCalled();
     expect(res.body).toEqual({summary: mockData});
   });
 });
@@ -146,7 +146,15 @@ describe('POST /student', () => {
 
     const res = await request(app).post('/students').send(newStudent).expect(201);
 
-    expect(mockStudents.insertOne).toHaveBeenCalledWith(newStudent);
+    expect(mockStudents.insertOne).toHaveBeenCalled();
+
+    const insertedStudent = mockStudents.insertOne.mock.calls[0][0];
+    expect(insertedStudent.fullname).toBe('Jack NotDaniels');
+    expect(insertedStudent.city).toBe('NY');
+    expect(insertedStudent.dateOfBirth).toBe('2000-01-01');
+    expect(insertedStudent.gender).toBe('male');
+    expect(insertedStudent.telegram).toBe('@daniels');
+    
     expect(res.body).toEqual(expectedResponse);
   });
 });
@@ -184,5 +192,82 @@ describe('POST /students/many', () => {
     expect(res.body).toHaveLength(2);
     expect(res.body[0]).toHaveProperty('_id', 'ladsjdkasjdlaksjdals12312')
     expect(res.body[1]).toHaveProperty('_id', 'j3kl12j3lk12j3j12k3jl12j31')
+  });
+});
+
+describe('PUT /students/replace/:id', () => {
+  test('replace student', async () => {
+    const studentId = 'lkdll323l1kl21k1';
+
+    const replacementStudent = {
+      fullname: 'New Jack',
+      city: 'LA',
+      dateOfBirth: '2001-10-10',
+      gender: 'male',
+      telegram: '@jack'
+    };
+
+    mockStudents.replaceOne.mockResolvedValue({
+      acknowledged: true,
+      matchedCount: 1,
+      modifiedCount: 1
+    });
+
+    const res = await request(app).put(`/students/replace/${studentId}`).send(replacementStudent).expect(200);
+
+    expect(mockStudents.replaceOne).toHaveBeenCalled();
+    expect(res.body).toHaveProperty('modifiedCount', 1);
+  });
+
+    test('Student not found', async () => {
+    const studentId = 'nonexistent';
+    const replacementDoc = { fullname: 'New Student' };
+    
+    mockStudents.replaceOne.mockResolvedValue({
+      matchedCount: 0,
+      modifiedCount: 0
+    });
+    
+    const res = await request(app).put(`/students/replace/${studentId}`).send(replacementDoc).expect(404);
+      
+    expect(res.body).toHaveProperty('error', 'Student doesnt exists');
+  });
+});
+
+describe('DELETE /student/"id', () => {
+  test('student successfully deleted', async () => {
+    mockStudents.deleteOne.mockResolvedValue({ deletedCount: 1 });
+
+    await request(app).delete('/students/213123').expect(204);
+
+    expect(mockStudents.deleteOne).toHaveBeenCalled();
+  });
+
+  test('student not found', async () => {
+    mockStudents.deleteOne.mockResolvedValue({ deletedCount: 0});
+    
+    const res = await request(app).delete('/students/312312').expect(404);
+
+    expect(mockStudents.deleteOne).toHaveBeenCalled();
+    expect(res.body).toHaveProperty('error', 'Student not found');
+  });
+});
+
+describe('DELETE /students/many', () => {
+  test('delete multiple students ', async () => {
+    const filter = { city: 'LA'};
+
+    mockStudents.deleteMany.mockResolvedValue({ deletedCount: 3 });
+
+    const res = await request(app).delete('/students/many').send(filter).expect(200);
+
+    expect(mockStudents.deleteMany).toHaveBeenCalledWith(filter);
+    expect(res.body).toEqual({ deletedCount: 3 });
+  });
+
+  test('missed filter', async () => {
+    const res = await request(app).delete('/students/many').send().expect(400);
+
+    expect(res.body).toHaveProperty('error', 'Missed filter')
   })
 })
