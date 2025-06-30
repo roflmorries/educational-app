@@ -24,7 +24,7 @@ export const saveStudentAsync = createAsyncThunk('students/saveStudent', async (
 export const getAllStudents = createAsyncThunk('students/getStudents', async () => {
   const response = await fetch(`${serverUrl}/students`);
   const result = await response.json();
-  return result;
+  return result.data;
 });
 
 export const deleteStudentAsync = createAsyncThunk('students/deleteStudent', async id => {

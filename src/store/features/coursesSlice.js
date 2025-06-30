@@ -24,7 +24,7 @@ export const saveCourseAsync = createAsyncThunk('courses/saveCourse', async (dat
 export const getAllCourses = createAsyncThunk('courses/getCourses', async () => {
   const response = await fetch(`${serverUrl}/courses`);
   const result = await response.json();
-  return result;
+  return result.data;
 });
 
 export const deleteCourseAsync = createAsyncThunk('courses/deleteCourse', async id => {
