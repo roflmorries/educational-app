@@ -1,0 +1,42 @@
+services:
+ app:
+   image: educational-app
+   build:
+     context: .
+     dockerfile: Dockerfile
+   ports:
+     - "3000:3000"
+   environment:
+     - DB_HOST=mongo
+     - DB_PORT=27017
+     - DB_USER=root
+     - DB_PASSWORD=root_pwd
+     - DB_NAME=educational-app
+   volumes:
+     - .:/app
+     - /app/node_modules
+   command: npx nodemon -L ./src/server.js
+   restart: unless-stopped
+   depends_on:
+     - mongo
+
+ frontend:
+   build:
+     context: ..
+     dockerfile: Dockerfile
+   container_name: educational-frontend
+   ports:
+     - "5173:5173"
+   restart: unless-stopped
+
+ mongo:
+   image: mongo:latest
+   container_name: mongodb
+   ports:
+     - "27017:27017"
+   command: ["mongod", "--quiet", "--logpath", "/dev/null"]
+   environment:
+     MONGO_INITDB_ROOT_USERNAME: root
+     MONGO_INITDB_ROOT_PASSWORD: root_pwd
+   volumes:
+     - ./db:/data/db
